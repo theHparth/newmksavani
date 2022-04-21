@@ -1,0 +1,460 @@
+/api/v1/wereHouse :
+ get => / => give you list of all stock you added into werehouse  ==>  all data list
+ post => / => you can add item into werehouse  ==> ( vendor_name, stock_name, price, totalQtyInOneBox, totalBox )
+ delete => /:id => can delete any stok added in werehouse ==> ( id  of stock)
+ patch => /:id => update product added into werehouse ==> (id of stock,  vendor_name, stock_name, price, totalQtyInOneBox, totalBox  )
+
+
+/api/v1/stockOut :
+ get => / => send stock to user   ==>  ( hospitalName, stock_name, totalQtyInOneBox, totalBox, price )
+ post => / => you can add item into werehouse ==> (hospitalName, stock_name, totalQtyInOneBox, totalBox, price (send to backend not matter with showprice is false) , showPrice = true/false )
+ delete => /:id => can delete any stok added in werehouse ==> ( id  of stock)
+ patch => /:id => update product added into werehouse ==> ( id = of stock,  hospitalName, stock_name, totalQtyInOneBox, totalBox, price , showPrice = true/false ) 
+ get => /falseAdmin => show only data whose stock status is false. So, now you not need to add filter  (there you will add "update", "delete" button to changeany data )
+ get => /trueAdmin => show only data whose stock status is true. ( here you can only see all product you send to specific shop and he already received "
+
+/api/v1/stocksUser:
+ get => /falseUser => show only data whose stock status is false. So, now you not need to add filter  (there you will add "received" button to change status from false true )
+ get => /trueUser => show only data whose stock status is true. ( here you can only see all product you received in past
+ patch => /status/:id => only change status after receive product like received => ( id => of stock, status==false)
+ post => /todaySellingHospital =>  add product details which you sold today ==> ( stock_name, totalQtyInOneBox, totalBox )
+ get => /todaySellingHospital =>  see data which you added where you can update or delete API in below ==> ( stock_name, totalQtyInOneBox, totalBox )
+ patch => /:id =>  update ==> (id, stock_name, totalQtyInOneBox, totalBox )
+ delete => /:id  => for deleteing ==> ( id )
+
+
+NOTE:
+	first letter of hospitalName, vendor_name, stockName send capital in database  ==> previously already did for hospitalName
+	
+
+ /api/v1/wereHouse :
+ get => / => give you list of all stock you added into werehouse  ==>  all data list
+ post => / => you can add item into werehouse  ==> ( vendor_name, stock_name, price, totalQtyInOneBox, totalBox )
+ delete => /:id => can delete any stok added in werehouse ==> ( id  of stock)
+ patch => /:id => update product added into werehouse ==> (id of stock,  vendor_name, stock_name, price, totalQtyInOneBox, totalBox  )
+
+
+/api/v1/stockOut :
+ get => / => send stock to user   ==>  ( hospitalName, stock_name, totalQtyInOneBox, totalBox, price , date)
+ post => / => you can add item into werehouse ==> (hospitalName, stock_name, totalQtyInOneBox, totalBox, price (send to backend not matter with showprice is false) , showPrice = true/false )
+ delete => /:id => can delete any stok added in werehouse ==> ( id  of stock)
+ patch => /:id => update product added into werehouse ==> ( id = of stock,  hospitalName, stock_name, totalQtyInOneBox, totalBox, price , showPrice = true/false, status= false ) 
+ get => /falseAdmin => show only data whose stock status is false. So, now you not need to add filter  (there you will add "update", "delete" button to changeany data )
+ get => /trueAdmin => show only data whose stock status is true. ( here you can only see all product you send to specific shop and he already received "
+
+/api/v1/stocksUser:
+ get => /falseUser => show only data whose stock status is false. So, now you not need to add filter  (there you will add "received" button to change status from false true )
+ get => /trueUser => show only data whose stock status is true. ( here you can only see all product you received in past
+ patch => /status/:id => only change status after receive product like received => ( id => of stock, status==false)
+ post => /todaySellingHospital =>  add product details which you sold today ==> ( stock_name, totalQtyInOneBox, totalBox )
+ get => /todaySellingHospital =>  see data which you added where you can update or delete API in below ==> ( stock_name, totalQtyInOneBox, totalBox )
+ patch => /todaySellingHospital/:id =>  update ==> (id, stock_name, totalQtyInOneBox, totalBox )
+ delete => /todaySellingHospital/:id  => for deleteing ==> ( id )
+
+
+NOTE:
+	first letter of hospitalName, vendor_name, stockName send capital in database  ==> previously already did for hospitalName
+
+
+import useAuth from 'app/hooks/useAuth'
+import { flat } from 'app/utils/utils'
+import React, { useState, useEffect } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
+
+import { AllPages } from '../routes/routes'
+import { AllUserPages } from '../routes/routesUser'
+
+const getUserRoleAuthStatus = (
+    pathname,
+    user,
+    routes,
+    hospital,
+    routesHospital
+) => {
+    if (!user && !hospital) {
+        return false
+    }
+    if (user) {
+        const matched = routes.find((r) => r.path === pathname)
+        const authenticated =
+            matched && matched.auth && matched.auth.length
+                ? matched.auth.includes(user)
+                : true
+        console.log(matched, user)
+        return authenticated
+    } else {
+        const matched = routesHospital.find((r) => r.path === pathname)
+
+        const authenticated =
+            matched && matched.auth && matched.auth.length
+                ? matched.auth.includes(hospital)
+                : true
+        console.log(matched, user)
+        return authenticated
+    }
+}
+
+const AuthGuard = ({ children }) => {
+    const { isAuthenticated, user, hospital, isAuthenticatedHospital } =
+        useAuth()
+
+    // return <>{isAuthenticated ? children : <Navigate to="/session/signin" />}</>
+
+    const [previouseRoute, setPreviousRoute] = useState(null)
+    const { pathname } = useLocation()
+    const routes = flat(AllPages())
+    const routesHospital = flat(AllUserPages())
+    var isUserRoleAuthenticated
+    let authenticated
+    if (user) {
+        isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, routes)
+        authenticated = isAuthenticated && isUserRoleAuthenticated
+    } else {
+        isUserRoleAuthenticated = getUserRoleAuthStatus(
+            pathname,
+            hospital,
+            routesHospital
+        )
+        authenticated = isAuthenticatedHospital && isUserRoleAuthenticated
+    }
+
+    // IF YOU NEED ROLE BASED AUTHENTICATION,
+    // UNCOMMENT ABOVE TWO LINES, getUserRoleAuthStatus METHOD AND user VARIABLE
+    // AND COMMENT OUT BELOW LINE
+
+    // let authenticated = isAuthenticated
+
+    useEffect(() => {
+        if (previouseRoute !== null) setPreviousRoute(pathname)
+    }, [pathname, previouseRoute])
+
+    if (authenticated) return <>{children}</>
+    else {
+        return (
+            <Navigate
+                to="/session/signin"
+                state={{ redirectUrl: previouseRoute }}
+            />
+            // <Redirect
+            //     to={{
+            //         pathname: '/session/signin',
+            //         state: { redirectUrl: previouseRoute },
+            //     }}
+            // />
+        )
+    }
+}
+
+export default AuthGuard
+
+
+//////////////
+
+import React, { createContext, useEffect, useReducer } from 'react'
+import axios from 'axios'
+import { MatxLoading } from 'app/components'
+
+const initialState = {
+    isAuthenticated: false,
+    isAuthenticatedHospital: false,
+    isInitialised: false,
+    user: null,
+    token: null,
+    hospital: null,
+    tokenHospital: null,
+}
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'INIT': {
+            const { isAuthenticated, user, hospital } = action.payload
+            if (user) {
+                return {
+                    ...state,
+                    isAuthenticated,
+                    isInitialised: true,
+                    user,
+                }
+            } else {
+                return {
+                    ...state,
+                    isAuthenticated,
+                    isAuthenticatedHospital: true,
+                    hospital,
+                }
+            }
+        }
+        case 'LOGIN': {
+            const { user, token, hospital, tokenHospital } = action.payload
+            if (user) {
+                return {
+                    ...state,
+                    isAuthenticated: true,
+                    user,
+                    token,
+                }
+            } else {
+                return {
+                    ...state,
+                    isAuthenticatedHospital: true,
+                    hospital,
+                    tokenHospital,
+                }
+            }
+        }
+        case 'LOGIN_ERROR': {
+            const { msg } = action.payload
+
+            return {
+                ...state,
+                msg,
+            }
+        }
+
+        case 'LOGOUT': {
+            return {
+                ...state,
+                isAuthenticated: false,
+                user: null,
+                token: null,
+                hospital: null,
+                tokenHospital: null,
+            }
+        }
+        // case 'REGISTER': {
+        //     const { user, token } = action.payload
+
+        //     return {
+        //         ...state,
+        //         isAuthenticated: true,
+        //         user,
+        //         token,
+        //     }
+        // }
+        default: {
+            return { ...state }
+        }
+    }
+}
+
+const AuthContext = createContext({
+    ...initialState,
+    method: 'JWT',
+    // taoken: '',
+
+    login: () => Promise.resolve(),
+    loginUser: () => Promise.resolve(),
+    logout: () => {},
+    register: () => Promise.resolve(),
+})
+
+export const AuthProvider = ({ children }) => {
+    const [state, dispatch] = useReducer(reducer, initialState)
+
+    const authFetch = axios.create({
+        baseURL: '/api/v1',
+    })
+    // request
+
+    authFetch.interceptors.request.use(
+        (config) => {
+            if (state.token) {
+                config.headers.common['Authorization'] = `Bearer ${state.token}`
+            } else {
+                config.headers.common[
+                    'Authorization'
+                ] = `Bearer ${state.tokenHospital}`
+            }
+            return config
+        },
+        (error) => {
+            return Promise.reject(error)
+        }
+    )
+    // response
+
+    authFetch.interceptors.response.use(
+        (response) => {
+            return response
+        },
+        (error) => {
+            if (error.response.status === 401) {
+                logout()
+            }
+            return Promise.reject(error)
+        }
+    )
+
+    const addUserToLocalStorage = ({
+        user,
+        token,
+        hospital,
+        tokenHospital,
+    }) => {
+        if (user) {
+            localStorage.setItem('user', JSON.stringify(user))
+            localStorage.setItem('token', token)
+        } else {
+            localStorage.setItem('hospital', JSON.stringify(hospital))
+            localStorage.setItem('tokenHospital', tokenHospital)
+        }
+    }
+
+    const removeUserFromLocalStorage = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+
+        localStorage.removeItem('tokenHospital')
+        localStorage.removeItem('hospital')
+    }
+
+    const login = async (email, password) => {
+        try {
+            const response = await authFetch.post('/auth/login', {
+                email,
+                password,
+            })
+
+            const { token, user } = response.data
+
+            addUserToLocalStorage({ user, token })
+
+            dispatch({
+                type: 'LOGIN',
+                payload: {
+                    user,
+                    token,
+                },
+            })
+        } catch (error) {
+            dispatch({
+                type: 'LOGIN_ERROR',
+                payload: { msg: error.response.data.msg },
+            })
+        }
+    }
+
+    const loginUser = async (email, password) => {
+        try {
+            const response = await authFetch.post('/authHospital/login', {
+                email,
+                password,
+            })
+
+            const { tokenHospital, hospital } = response.data
+
+            addUserToLocalStorage({ hospital, tokenHospital })
+
+            dispatch({
+                type: 'LOGIN',
+                payload: {
+                    hospital,
+                    tokenHospital,
+                },
+            })
+        } catch (error) {
+            dispatch({
+                type: 'LOGIN_ERROR',
+                payload: { msg: error.response.data.msg },
+            })
+        }
+        // clearAlert()
+    }
+
+    const register = async (email, name, password) => {
+        // const response = await authFetch.post('/auth/register', {
+        //     email,
+        //     name,
+        //     password,
+        // })
+        // const { token, user } = response.data
+        // addUserToLocalStorage({ user, token })
+        // dispatch({
+        //     type: 'REGISTER',
+        //     payload: {
+        //         user,
+        //     },
+        // })
+    }
+
+    const logout = () => {
+        removeUserFromLocalStorage()
+        dispatch({ type: 'LOGOUT' })
+    }
+
+    // ----------------------------------------------------------------
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const token = window.localStorage.getItem('token')
+                const user = window.localStorage.getItem('user')
+                const tokenHospital =
+                    window.localStorage.getItem('tokenHospital')
+                const hospital = window.localStorage.getItem('hospital')
+
+                if (token && user) {
+                    dispatch({
+                        type: 'INIT',
+                        payload: {
+                            isAuthenticated: true,
+                            user,
+                        },
+                    })
+                } else if (tokenHospital && hospital) {
+                    dispatch({
+                        type: 'INIT',
+                        payload: {
+                            isAuthenticated: true,
+                            hospital,
+                        },
+                    })
+                } else {
+                    dispatch({
+                        type: 'INIT',
+                        payload: {
+                            isAuthenticated: false,
+                            user: null,
+                            hospital: null,
+                        },
+                    })
+                }
+            } catch (err) {
+                console.error(err)
+                dispatch({
+                    type: 'INIT',
+                    payload: {
+                        isAuthenticated: false,
+                        user: null,
+                        hospital: null,
+                    },
+                })
+            }
+        })()
+    }, [])
+
+    if (!state.isInitialised) {
+        return <MatxLoading />
+    }
+
+    return (
+        <AuthContext.Provider
+            value={{
+                ...state,
+                method: 'JWT',
+                login,
+                logout,
+                register,
+                loginUser,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthContext
+
+
+	
+
+ 
