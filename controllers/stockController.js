@@ -1,4 +1,4 @@
-import stocks from "../models/Stocks.js";
+import Stocks from "../models/Stocks.js";
 import { StatusCodes } from "http-status-codes";
 
 import { BadRequestError, NotFoundError } from "../errors/index.js";
@@ -9,12 +9,12 @@ import UserStock from "../models/User/stockOut.js";
 
 const addStockQty = async (stock_name, totalQtyInOneBox, totalBox, price) => {
   // console.log(stock_name, totalQtyInOneBox, totalBox);
-  // const stock = await stocks.findOne({
+  // const stock = await Stocks.findOne({
   //   stock_name: { $regex: stock_name, $options: "i" },
   // });
   // console.log(stock);
   try {
-    await stocks.updateOne(
+    await Stocks.updateOne(
       { stock_name: { $regex: stock_name, $options: "i" } },
       {
         $inc: {
@@ -36,7 +36,7 @@ const removeStockQty = async (
   totalBox,
   price
 ) => {
-  const stock = stocks.findOne({
+  const stock = Stocks.findOne({
     stock_name: { $regex: stock_name, $options: "i" },
   });
 
@@ -47,7 +47,7 @@ const removeStockQty = async (
     // res.status(StatusCodes.OK).json({ msg: "stock limit exceed" });
   }
   try {
-    await stocks.updateOne(
+    await Stocks.updateOne(
       { stock_name: { $regex: stock_name, $options: "i" } },
       {
         $inc: {
@@ -78,14 +78,14 @@ const addStock = async (req, res) => {
 
   var result = {};
   result.stock_name = { $regex: stock_name, $options: "i" };
-  const stockAlreadyExists = await stocks.findOne(result);
+  const stockAlreadyExists = await Stocks.findOne(result);
 
   if (stockAlreadyExists) {
     throw new BadRequestError("Stock already in Database");
   }
   req.body.createdBy = req.user.userId;
 
-  const stock = await stocks.create(req.body);
+  const stock = await Stocks.create(req.body);
   res.status(StatusCodes.CREATED).json({ stock });
 };
 
@@ -101,7 +101,7 @@ const getAllStock = async (req, res) => {
   }
   // NO AWAIT
 
-  let result = stocks.find(queryObject);
+  let result = Stocks.find(queryObject);
 
   result = result.sort("-createdAt");
 
@@ -119,7 +119,7 @@ const updateStock = async (req, res) => {
     throw new BadRequestError("Please provide all values");
   }
 
-  const stock = await stocks.findOne({ _id: stockId });
+  const stock = await Stocks.findOne({ _id: stockId });
 
   if (!stock) {
     throw new NotFoundError(`No stock data with id :${stockId}`);
@@ -128,7 +128,7 @@ const updateStock = async (req, res) => {
 
   checkPermissions(req.user, stock.createdBy);
 
-  const updatedStock = await stocks.findOneAndUpdate(
+  const updatedStock = await Stocks.findOneAndUpdate(
     { _id: stockId },
     req.body,
     {
@@ -159,7 +159,7 @@ const updateStock = async (req, res) => {
 const deleteStock = async (req, res) => {
   const { id: stockId } = req.params;
 
-  const stock = await stocks.findOne({ _id: stockId });
+  const stock = await Stocks.findOne({ _id: stockId });
 
   if (!stock) {
     throw new NotFoundError(`No job with id :${stockId}`);
@@ -168,7 +168,7 @@ const deleteStock = async (req, res) => {
   checkPermissions(req.user, stock.createdBy);
 
   // await stock.remove();
-  const deactiveStock = await stocks.findOneAndUpdate(
+  const deactiveStock = await Stocks.findOneAndUpdate(
     { _id: stockId },
     { stockStatus: !stock.stockStatus },
     {
