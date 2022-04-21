@@ -92,3 +92,41 @@ const start = async () => {
 };
 
 start();
+
+// const express = require("express");
+// const app = express();
+// const dotenv = require("dotenv");
+// dotenv.config();
+// // import "express-async-errors";
+// require("express-async-errors");
+// var morgan = require("morgan");
+
+// const { dirname } = "path";
+// const { fileURLToPath } = "url";
+// const path = require("path");
+
+// const helmet = require("helmet");
+// const xss = require("xss-clean");
+// const mongoSanitize = require("express-mongo-sanitize");
+
+// // hello
+// // db and authenticateUser
+// const connectDB = "./db/connect";
+
+// // routers
+// const authRouter = require("./routes/authRoutes");
+// const authRouterHospital = "./routes/user/authRoutesHospital";
+// const jobsRouter = "./routes/jobsRoutes";
+// const hospitalRouter = "./routes/hospitalRoutes";
+// const vendorRouter = "./routes/vendorRoutes";
+// const stockRouter = "./routes/stockRoutes";
+// const wereHouseRouter = "./routes/wereHouseRouter";
+// const stockOutRouter = "./routes/stockOutRouter";
+// const stockInUserRouter = "./routes/user/stockInUserRouter";
+// const hospitalStockViewAdmin = "./routes/hospitalStockViewAdmin";
+
+// // middleware
+// const notFoundMiddleware = "./middleware/not-found.js";
+// const errorHandlerMiddleware = "./middleware/error-handler.js";
+// const authenticateUser = "./middleware/auth.js";
+// const authenticateHospital = "./middleware/user/authHospital.js";

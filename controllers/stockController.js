@@ -1,4 +1,4 @@
-import Stocks from "../models/Stocks";
+import Stocks from "../models/Stocks.js";
 import { StatusCodes } from "http-status-codes";
 
 import { BadRequestError, NotFoundError } from "../errors/index.js";
