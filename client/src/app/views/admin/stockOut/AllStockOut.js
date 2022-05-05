@@ -252,6 +252,7 @@ const AllStockOutTrueStatus = ({ id }) => {
                                                             </>
                                                         )}
                                                     </TableCell>
+                                                    {/* TO PRINT */}
                                                     <TableCell align="center">
                                                         <Button
                                                             variant="outlined"
@@ -268,9 +269,9 @@ const AllStockOutTrueStatus = ({ id }) => {
                                                             <Icon color="primary">
                                                                 print
                                                             </Icon>
-                                                            {/* Print */}
                                                         </Button>
                                                     </TableCell>
+                                                    {/* PRINT COMPLETE */}
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>

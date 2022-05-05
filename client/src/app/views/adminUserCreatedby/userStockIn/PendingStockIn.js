@@ -81,7 +81,15 @@ const PendingStockIn = () => {
     )
 
     const dispatch = useDispatch()
+    useEffect(() => {
+        console.log(stockInUserData.length, 'stockInUserData.length')
+        console.log(stockInUserData, 'stockInUserData')
 
+        // if (stockInUserData == [] || stockInUserData.length == 0) {
+        console.log('a------------')
+        // window.location.reload()
+        // }
+    }, [])
     useEffect(() => {
         var state = { searchText }
         state.status = false
