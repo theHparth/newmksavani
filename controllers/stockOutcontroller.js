@@ -27,21 +27,19 @@ const sendStockUser = async (req, res) => {
   if (!hospitalData) {
     throw new BadRequestError("Hospital data not found");
   }
-
   for (var data of stockOutDetail) {
     if (
       !data.totalQtyInOneBox ||
       !data.totalBox ||
-      !data.stock_name ||
-      !data.price
+      !data.stock_name
+      // !data.price
     ) {
       throw new BadRequestError("Please provide all values");
     }
-    if (
-      isNaN(data.totalQtyInOneBox) ||
-      isNaN(data.totalBox) ||
-      isNaN(data.price)
-    ) {
+    if (isNaN(data.totalQtyInOneBox) || isNaN(data.totalBox)) {
+      throw new BadRequestError("Please enter valid number");
+    }
+    if (data.priceForUser && isNaN(data.priceForUser)) {
       throw new BadRequestError("Please enter valid number");
     }
 
@@ -75,7 +73,7 @@ const sendStockUser = async (req, res) => {
 };
 
 const filterResult = async (queryObject, searchText, status) => {
-  console.log(typeof searchText);
+  // console.log(typeof searchText);
   if (status) {
     queryObject.status = status;
   }
@@ -83,19 +81,7 @@ const filterResult = async (queryObject, searchText, status) => {
   var result;
   if (!searchText) {
     result = await UserStock.find(queryObject);
-  }
-  // else if (searchText == "true" || searchText == "false") {
-  //   searchText === "true" ? true : searchText === "false" ? false : searchText;
-  //   result = await UserStock.find({
-  //     $and: [
-  //       queryObject,
-  //       {
-  //         $or: [{ status: searchText }],
-  //       },
-  //     ],
-  //   });
-  // }
-  else if (isNaN(searchText) === false) {
+  } else if (isNaN(searchText) === false) {
     searchText = parseInt(searchText);
     result = await UserStock.find({
       $and: [
@@ -105,18 +91,7 @@ const filterResult = async (queryObject, searchText, status) => {
         },
       ],
     });
-  }
-  //  else if ((searchText.length == 12, searchText.length == 24)) {
-  //   result = await UserStock.find({
-  //     $and: [
-  //       queryObject,
-  //       {
-  //         $or: [{ createdFor: mongoose.Types.ObjectId(searchText) }],
-  //       },
-  //     ],
-  //   });
-  // }
-  else {
+  } else {
     result = await UserStock.find({
       $and: [
         queryObject,

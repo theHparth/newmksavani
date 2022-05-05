@@ -56,11 +56,13 @@ const CustomerList = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        console.log(location.pathname, 'aaaaaaaaaaaaaa')
         dispatch(getHospitalsData())
     }, [dispatch])
     // my import finish
     const location = useLocation()
 
+    console.log(location.pathname, '2222222222222')
     var privatrRoute = false
     if (location.pathname === '/allHospitalsD') {
         privatrRoute = true

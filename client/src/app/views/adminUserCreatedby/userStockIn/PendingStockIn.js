@@ -13,6 +13,7 @@ import {
     StyledTable,
     InvoiceDetails,
     LodingShow,
+    SearchBox,
 } from 'app/components'
 import { useLocation } from 'react-router-dom' // my import
 import {
@@ -41,6 +42,7 @@ const PendingStockIn = () => {
     const [shouldOpenConfirmationDialog, setShouldOpenConfirmationDialog] =
         useState(false)
     const [info, setInfo] = useState()
+
     const handleDialogClose = () => {
         setShouldOpenEditorDialog(false)
         setShouldOpenConfirmationDialog(false)
@@ -56,6 +58,13 @@ const PendingStockIn = () => {
             handleDialogClose()
             setExpanded(false)
         })
+    }
+
+    // search for all
+    let [searchText, setSearchText] = React.useState('')
+
+    const handleChangeSearch = (value) => {
+        setSearchText(value)
     }
 
     // check for route
@@ -74,14 +83,14 @@ const PendingStockIn = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        var state = {}
+        var state = { searchText }
         state.status = false
         if (privatrRoute) {
             state.status = true
         }
         dispatch(AllstockInUser(state))
         setExpanded(false)
-    }, [dispatch, privatrRoute])
+    }, [dispatch, privatrRoute, searchText])
 
     // for pagination purposes
     const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -111,6 +120,10 @@ const PendingStockIn = () => {
                     ]}
                 />
             </div>
+            <SearchBox
+                onSearch={handleChangeSearch}
+                onSearchValueChange={searchText}
+            />
             {isLoading && <LodingShow />}
 
             <SimpleCard>

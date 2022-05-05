@@ -50,7 +50,7 @@ const getAllVendor = async (req, res) => {
   }
   // NO AWAIT
 
-  let result = vendors.find(queryObject);
+  let result = vendors.find(queryObject).sort({ vendor_name: 1 });
 
   const vendorList = await result;
 

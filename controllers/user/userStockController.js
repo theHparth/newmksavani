@@ -142,14 +142,63 @@ const statusController = async (req, res) => {
 // };
 
 const stockInUserFun = async (req, res) => {
-  const { searchText, hospitalId, status, startDate, endDate } = req.query;
+  var { searchText, status, startDate, endDate } = req.query;
 
-  console.log(status, "status");
+  // console.log(status, "status");
   const queryObject = {
     createdFor: req.hospital.hospitalId,
     status: status,
   };
-  let result = UserStock.find(queryObject);
+  let result;
+  // result = UserStock.find(queryObject);
+  if (!searchText) {
+    result = await UserStock.find(queryObject);
+  } else if (isNaN(searchText) === false) {
+    console.log(searchText, "searchText");
+    searchText = parseInt(searchText);
+    result = await UserStock.find({
+      $and: [
+        queryObject,
+        {
+          $or: [{ invoiceNum: searchText }],
+        },
+        // {
+        //   createdAt: {
+        //     $elemMatch: {
+        //       createdAt: { $regex: searchText, $options: "i" },
+        //     },
+        //   },
+        // },
+      ],
+    });
+  } else {
+    result = await UserStock.find({
+      $and: [
+        queryObject,
+        {
+          $or: [
+            { hospitalName: { $regex: searchText, $options: "i" } },
+            {
+              stockOutDetail: {
+                $elemMatch: {
+                  stock_name: { $regex: searchText, $options: "i" },
+                },
+              },
+            },
+            // {
+            //   createdAt: {
+            //     $elemMatch: {
+            //       createdAt: { $regex: searchText, $options: "i" },
+            //     },
+            //   },
+            // },
+          ],
+        },
+      ],
+    });
+  }
+
+  //
   const stockInUser = await result;
   const totalStock = await UserStock.countDocuments(queryObject);
 
@@ -176,29 +225,27 @@ const statusTrue = async (req, res) => {
   res.status(StatusCodes.OK).json({ stockInDataTrueStatus, totalStock });
 };
 
-const totoalStocksInUser = async (req, res) => {
-  var hospitalStatus = req.hospital.hospitalStatus;
+const totoalStocksUser = async (req, res) => {
+  var { searchText } = req.query;
 
   const queryObject = {
     createdFor: req.hospital.hospitalId,
   };
-  let result = StocksHosital.find(queryObject);
+  let result;
+  if (searchText && isNaN(searchText) === true) {
+    // stock_name: { $regex: searchText, $options: "i" },
+    result = await StocksHosital.find({
+      $and: [
+        queryObject,
+        {
+          $or: [{ stock_name: { $regex: searchText, $options: "i" } }],
+        },
+      ],
+    });
+  } else {
+    result = StocksHosital.find(queryObject);
+  }
   const presentStockUser = await result;
-
-  // var result = await StocksHosital.aggregate([
-  //   { $match: { $expr: { $lt: ["$totalQtyUser", "$minimumLimit"] } } },
-  //   {
-  //     $group: {
-  //       _id: "$hospitalName",
-  //       belowLimit: {
-  //         $push: {
-  //           stock_name: "$stock_name",
-  //           totalQtyUser: "$totalQtyUser",
-  //         },
-  //       },
-  //     },
-  //   },
-  // ]);
 
   res.status(StatusCodes.OK).json({ presentStockUser });
 };
@@ -250,6 +297,6 @@ export {
   removeStockQty,
   stockInUserFun,
   statusTrue,
-  totoalStocksInUser,
+  totoalStocksUser,
   minimumRequiremantUserChange,
 };

@@ -122,28 +122,11 @@ const getAllHospital = async (req, res) => {
   }
   // NO AWAIT
 
-  let result = Hospital.find(queryObject);
-  // chain sort conditions
+  let result = Hospital.find(queryObject).sort({ hospitalName: 1 });
 
-  if (sort === "latest") {
-    result = result.sort("-createdAt");
-  }
-  if (sort === "oldest") {
-    result = result.sort("createdAt");
-  }
-  if (sort === "a-z") {
-    result = result.sort("position");
-  }
-  if (sort === "z-a") {
-    result = result.sort("-position");
-  }
-
-  const hospitals = await result;
-  // console.log(hospitals);
-
+  var hospitals = await result;
   const totalHospitals = await Hospital.countDocuments(queryObject);
-  // const numOfPages = Math.ceil(totalHospitals / limit);
-  // numOfPages;
+
   res.status(StatusCodes.OK).json({ hospitals, totalHospitals });
 };
 

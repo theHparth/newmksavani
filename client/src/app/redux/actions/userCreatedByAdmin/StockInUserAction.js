@@ -27,9 +27,11 @@ const authFetch = axios.create({
 })
 
 const AllstockInUser = (state) => async (dispatch) => {
-    const { status } = state
+    const { status, searchText } = state
     var url = `/stockInUser?status=${status}`
-
+    if (searchText) {
+        url = url + `&searchText=${searchText}`
+    }
     dispatch({
         type: GET_BEGIN,
     })
@@ -49,12 +51,20 @@ const AllstockInUser = (state) => async (dispatch) => {
     dispatch(clearAlert())
 }
 const inStockUser = (state) => async (dispatch) => {
+    var { searchText } = state
+
+    let url = '/totalStocks'
+    // var { searchStock } = state
+    if (searchText) {
+        url = url + `?searchText=${searchText}`
+    }
+
     dispatch({
         type: GET_BEGIN,
     })
 
     try {
-        const { data } = await authFetch.get('/totalStocks')
+        const { data } = await authFetch.get(url)
         const { presentStockUser } = data
         console.log('presentstockdata', presentStockUser)
         dispatch({

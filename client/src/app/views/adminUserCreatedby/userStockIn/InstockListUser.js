@@ -14,6 +14,7 @@ import {
     inStockUser,
 } from 'app/redux/actions/userCreatedByAdmin/StockInUserAction'
 import {
+    Breadcrumb,
     SimpleCard,
     ContainerTable,
     StyledTable,
@@ -21,10 +22,19 @@ import {
     MyAlert,
     StyledButton,
     LodingShow,
+    SearchBox,
 } from 'app/components'
 import HandleEditMinimum from './HandleEditMinimum'
 
 const InstockListUser = () => {
+    // search for all
+    let [searchText, setSearchText] = React.useState('')
+
+    const handleChangeSearch = (value) => {
+        setSearchText(value)
+    }
+
+    //
     let {
         presentStockUserData = [],
         showAlert,
@@ -44,8 +54,9 @@ const InstockListUser = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(inStockUser())
-    }, [dispatch])
+        var state = { searchText }
+        dispatch(inStockUser(state))
+    }, [dispatch, searchText])
 
     var stockDatas = presentStockUserData || []
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
@@ -62,13 +73,24 @@ const InstockListUser = () => {
 
     const handleDialogClose = () => {
         setShouldOpenEditorDialog(false)
-        dispatch(inStockUser())
+        dispatch(inStockUser({}))
     }
     return (
         <ContainerTable>
             <SimpleCard title="Stocks List">
+                <div className="breadcrumb">
+                    <Breadcrumb
+                        routeSegments={[
+                            { name: 'Add Stock', path: '/addStock' },
+                            { name: 'Table' },
+                        ]}
+                    />
+                </div>
                 {isLoading && <LodingShow />}
-
+                <SearchBox
+                    onSearch={handleChangeSearch}
+                    onSearchValueChange={searchText}
+                />
                 <Box width="100%" overflow="auto">
                     <StyledTable>
                         <TableHead>

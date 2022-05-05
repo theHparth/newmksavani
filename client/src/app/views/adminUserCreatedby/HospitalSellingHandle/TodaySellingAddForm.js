@@ -35,7 +35,7 @@ function AddStockOutForm() {
     }, [])
 
     useEffect(() => {
-        dispatch(inStockUser())
+        dispatch(inStockUser({}))
     }, [dispatch])
 
     var [stockOutData, setStockOutData] = React.useState([

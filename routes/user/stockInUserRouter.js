@@ -5,7 +5,7 @@ import {
   statusController,
   stockInUserFun,
   statusTrue,
-  totoalStocksInUser,
+  totoalStocksUser,
   minimumRequiremantUserChange,
 } from "../../controllers/user/userStockController.js";
 
@@ -19,7 +19,7 @@ import {
 router.route("/status/:id").patch(statusController);
 router.route("/stockInUser").get(stockInUserFun);
 router.route("/trueUser").get(statusTrue);
-router.route("/totalStocks").get(totoalStocksInUser);
+router.route("/totalStocks").get(totoalStocksUser);
 router.route("/totalStocks/:id").patch(minimumRequiremantUserChange);
 
 router

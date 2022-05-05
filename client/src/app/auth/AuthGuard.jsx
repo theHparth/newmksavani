@@ -33,7 +33,6 @@ const AuthGuard = ({ children }) => {
     const { isAuthenticated, user, hospital, isHospital } = useAuth()
 
     // return <>{isAuthenticated ? children : <Navigate to="/session/signin" />}</>
-    console.log('isHospital', isHospital)
     const [previouseRoute, setPreviousRoute] = useState(null)
     const { pathname } = useLocation()
     const routes = flat(AllPages())

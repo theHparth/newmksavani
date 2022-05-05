@@ -213,10 +213,9 @@ const AllStockOutTrueStatus = ({ id }) => {
                                                     <TableCell>
                                                         Total Qty
                                                     </TableCell>
-                                                    <TableCell>Price</TableCell>
-                                                    {/* {subscriber.messageForHospital && (
-                                                    <TableCell>Note</TableCell>
-                                                )} */}
+                                                    <TableCell>
+                                                        Price to show
+                                                    </TableCell>
 
                                                     <TableCell align="right">
                                                         {privatrRoute && (
@@ -289,8 +288,8 @@ const AllStockOutTrueStatus = ({ id }) => {
                                                             </TableCell>
                                                             <TableCell>
                                                                 ${' '}
-                                                                {subscriber.price
-                                                                    ? subscriber.price
+                                                                {subscriber.priceForUser
+                                                                    ? subscriber.priceForUser
                                                                     : 0}
                                                             </TableCell>
                                                         </TableRow>
