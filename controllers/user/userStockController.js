@@ -1,5 +1,5 @@
-import UserStock from "../../models/User/stockOut.js";
-import StocksHosital from "../../models/User/stocksHospital.js";
+import StocksOut from "../../models/User/StocksOut.js";
+import StocksHosital from "../../models/User/StocksHospital.js";
 import { StatusCodes } from "http-status-codes";
 import Hospital from "../../models/Hospital.js";
 
@@ -63,7 +63,7 @@ const statusController = async (req, res) => {
   //   throw new UnAuthenticatedError("Invalid Credentials");
   // }
   const { status } = req.body;
-  const stockOutData = await UserStock.findOne({ _id: stockOutId });
+  const stockOutData = await StocksOut.findOne({ _id: stockOutId });
 
   if (!stockOutData) {
     throw new NotFoundError(`No stock data with id :${stockOutId}`);
@@ -109,7 +109,7 @@ const statusController = async (req, res) => {
     return;
   }
 
-  await UserStock.findOneAndUpdate(
+  await StocksOut.findOneAndUpdate(
     { _id: stockOutId },
     { status: true, deliveryDate: new Date() },
     {
@@ -122,7 +122,7 @@ const statusController = async (req, res) => {
 };
 
 // const minimumTheresold = async (req, res) => {
-//   var result = await UserStock.aggregate([
+//   var result = await StocksOut.aggregate([
 //     {
 //       $group: {
 //         _id: "$hospitalName",
@@ -150,13 +150,13 @@ const stockInUserFun = async (req, res) => {
     status: status,
   };
   let result;
-  // result = UserStock.find(queryObject);
+  // result = StocksOut.find(queryObject);
   if (!searchText) {
-    result = await UserStock.find(queryObject);
+    result = await StocksOut.find(queryObject);
   } else if (isNaN(searchText) === false) {
     console.log(searchText, "searchText");
     searchText = parseInt(searchText);
-    result = await UserStock.find({
+    result = await StocksOut.find({
       $and: [
         queryObject,
         {
@@ -172,7 +172,7 @@ const stockInUserFun = async (req, res) => {
       ],
     });
   } else {
-    result = await UserStock.find({
+    result = await StocksOut.find({
       $and: [
         queryObject,
         {
@@ -200,7 +200,7 @@ const stockInUserFun = async (req, res) => {
 
   //
   const stockInUser = await result;
-  const totalStock = await UserStock.countDocuments(queryObject);
+  const totalStock = await StocksOut.countDocuments(queryObject);
 
   res.status(StatusCodes.OK).json({ stockInUser, totalStock });
 };
@@ -218,9 +218,9 @@ const statusTrue = async (req, res) => {
   if (hospitalId) {
     queryObject._id = hospitalId;
   }
-  let result = UserStock.find(queryObject);
+  let result = StocksOut.find(queryObject);
   const stockInDataTrueStatus = await result;
-  const totalStock = await UserStock.countDocuments(queryObject);
+  const totalStock = await StocksOut.countDocuments(queryObject);
 
   res.status(StatusCodes.OK).json({ stockInDataTrueStatus, totalStock });
 };

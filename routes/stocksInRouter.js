@@ -6,7 +6,7 @@ import {
   deleteStockfromWereHouse,
   getAllStockfromWereHouse,
   updateStockfromWereHouse,
-} from "../controllers/wareHouseController.js";
+} from "../controllers/stocksInController.js";
 
 router.route("/").post(addStockinWereHouse).get(getAllStockfromWereHouse);
 router

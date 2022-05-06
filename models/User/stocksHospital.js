@@ -12,6 +12,7 @@ const StockHospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide stock name"],
       maxlength: 100,
+      unique: true,
     },
     minimumLimit: {
       type: Number,

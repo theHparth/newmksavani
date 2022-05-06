@@ -6,6 +6,7 @@ const stockOutSchema = new mongoose.Schema(
     invoiceNum: {
       type: Number,
       required: [true, "Please provide Invoice number"],
+      unique: true,
     },
     hospitalName: {
       type: String,
@@ -36,4 +37,4 @@ const stockOutSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("UserStock", stockOutSchema);
+export default mongoose.model("StocksOut", stockOutSchema);

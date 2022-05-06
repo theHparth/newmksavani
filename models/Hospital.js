@@ -9,6 +9,7 @@ const HospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide Hoapital Name"],
       maxlength: 150,
+      unique: true,
     },
     password: {
       type: String,
@@ -23,11 +24,17 @@ const HospitalSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide contect"],
       maxlength: 10,
+      unique: true,
     },
     email: {
       type: String,
       required: [true, "Please provide email"],
       maxlength: 150,
+      unique: true,
+      validate: {
+        validator: validator.isEmail,
+        message: "Please provide a valid email",
+      },
     },
     pincode: {
       type: Number,

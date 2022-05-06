@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 // import vendorDetail from "../controllers/vendoresController.js";
 
-const WereHouseSchema = new mongoose.Schema(
+const StocksInSchema = new mongoose.Schema(
   {
     invoiceNumStockIn: {
       type: Number,
@@ -27,4 +27,4 @@ const WereHouseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("WereHouseStocks", WereHouseSchema);
+export default mongoose.model("StocksIn", StocksInSchema);

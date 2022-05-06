@@ -1,4 +1,4 @@
-import UserStock from "../models/User/stockOut.js";
+import StocksOut from "../models/User/StocksOut.js";
 import { StatusCodes } from "http-status-codes";
 
 const filterDataCalculation = async (req, res) => {
@@ -49,7 +49,7 @@ const filterDataCalculation = async (req, res) => {
   }
 
   console.log(new_dates, "new_dates");
-  result = await UserStock.aggregate([
+  result = await StocksOut.aggregate([
     {
       $project: {
         hospitalName: 1,
@@ -112,7 +112,7 @@ const filterDataCalculation = async (req, res) => {
   ]);
 
   if (getStockByHospitalName) {
-    result = await UserStock.aggregate([
+    result = await StocksOut.aggregate([
       {
         $match: {
           $and: [
@@ -139,7 +139,7 @@ const filterDataCalculation = async (req, res) => {
   }
 
   if (getQtyByStockName) {
-    result = await UserStock.aggregate([
+    result = await StocksOut.aggregate([
       { $unwind: "$stockOutDetail" },
       {
         $group: {

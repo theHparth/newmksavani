@@ -94,7 +94,7 @@ const MemberEditorDialog = ({ open, handleClose }) => {
                 ) : (
                     <H4 sx={{ mb: '20px' }}>Add Hospital</H4>
                 )}
-                {isLoading && <LodingShow />}
+                {/* {isLoading && <LodingShow />} */}
                 <ValidatorForm onSubmit={handleSubmit}>
                     <Grid sx={{ mb: '16px' }} container spacing={4}>
                         <Grid item sm={16} xs={12}>

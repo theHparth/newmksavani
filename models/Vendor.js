@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 // import onlyVendorsName from "../controllers/jobsController.js";
+import validator from "validator";
 
 // onlyVendorsName
 
@@ -25,6 +26,11 @@ const VendorSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please provide email"],
       maxlength: 150,
+      unique: true,
+      validate: {
+        validator: validator.isEmail,
+        message: "Please provide a valid email",
+      },
     },
     pincode: {
       type: Number,

@@ -1,9 +1,6 @@
-import StocksHosital from "../models/User/stocksHospital.js";
+import StocksHosital from "../models/User/StocksHospital.js";
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError, NotFoundError } from "../errors/index.js";
-import checkPermissionsHospital from "../utils/user/checkPermissionsHospital.js";
-import UserStock from "../models/User/stockOut.js";
-import TodaySellingHospital from "../models/User/todaySellingUser.js";
+import TodaySellingHospital from "../models/User/TodaySellingUser.js";
 
 const minimumThresold = async (req, res) => {
   var result = await StocksHosital.aggregate([

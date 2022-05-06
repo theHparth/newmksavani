@@ -6,6 +6,7 @@ const StockSchema = new mongoose.Schema(
     stock_name: {
       type: String,
       required: [true, "Please provide stock name"],
+      unique: true,
     },
     description: {
       type: String,

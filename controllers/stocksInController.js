@@ -1,8 +1,8 @@
-import WereHouseStocks from "../models/Warehouse.js";
+import StocksIn from "../models/StocksIn.js";
 import { StatusCodes } from "http-status-codes";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import checkPermissions from "../utils/checkPermissions.js";
-import { addStockQty, removeStockQty } from "../controllers/stockController.js";
+import { addStockQty, removeStockQty } from "./stockController.js";
 
 const addStockinWereHouse = async (req, res) => {
   const { invoiceNumStockIn, vendor_name, stockInDetail, stockInNote } =
@@ -35,7 +35,7 @@ const addStockinWereHouse = async (req, res) => {
   });
 
   req.body.createdBy = req.user.userId;
-  const stock = await WereHouseStocks.create(req.body);
+  const stock = await StocksIn.create(req.body);
   console.log("in server werehouse", stockInDetail);
   res.status(StatusCodes.CREATED).json({ stock });
 };
@@ -68,12 +68,12 @@ const getAllStockfromWereHouse = async (req, res) => {
   // }
   let result;
   if (!searchText && !startDate) {
-    result = WereHouseStocks.find(queryObject);
+    result = StocksIn.find(queryObject);
   } else {
     if (isNaN(searchText) === false) {
       queryObject.invoiceNumStockIn = searchText;
       searchText = parseInt(searchText);
-      result = WereHouseStocks.find(queryObject);
+      result = StocksIn.find(queryObject);
     } else if (startDate) {
       console.log("startDate", startDate, "endDate", endDate);
 
@@ -82,7 +82,7 @@ const getAllStockfromWereHouse = async (req, res) => {
       }
       // queryObject.createdAt = { $gte: startDate };
       // queryObject.createdAt = { $lte: endDate };
-      result = WereHouseStocks.find({
+      result = StocksIn.find({
         $and: [
           queryObject,
           {
@@ -110,7 +110,7 @@ const getAllStockfromWereHouse = async (req, res) => {
         ],
       });
     } else {
-      result = WereHouseStocks.find({
+      result = StocksIn.find({
         $and: [
           queryObject,
           {
@@ -147,7 +147,7 @@ const updateStockfromWereHouse = async (req, res) => {
     throw new BadRequestError("Please provide all values");
   }
 
-  const stock = await WereHouseStocks.findOne({ _id: stockId });
+  const stock = await StocksIn.findOne({ _id: stockId });
 
   if (!stock) {
     throw new NotFoundError(`No stock data in werehouse with id :${stockId}`);
@@ -189,7 +189,7 @@ const updateStockfromWereHouse = async (req, res) => {
     );
   });
 
-  const updatedStock = await WereHouseStocks.findOneAndUpdate(
+  const updatedStock = await StocksIn.findOneAndUpdate(
     { _id: stockId },
     req.body,
     {
@@ -210,7 +210,7 @@ const updateStockfromWereHouse = async (req, res) => {
 
 const deleteStockfromWereHouse = async (req, res) => {
   const { id: stockId } = req.params;
-  const stock = await WereHouseStocks.findOne({ _id: stockId });
+  const stock = await StocksIn.findOne({ _id: stockId });
   // console.log(stock);
 
   if (!stock) {
@@ -230,7 +230,7 @@ const deleteStockfromWereHouse = async (req, res) => {
 
   await stock.remove();
 
-  // await WereHouseStocks.remove();
+  // await StocksIn.remove();
 
   res
     .status(StatusCodes.OK)

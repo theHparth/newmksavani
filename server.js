@@ -24,7 +24,7 @@ import jobsRouter from "./routes/jobsRoutes.js";
 import hospitalRouter from "./routes/hospitalRoutes.js";
 import vendorRouter from "./routes/vendorRoutes.js";
 import stockRouter from "./routes/stockRoutes.js";
-import wereHouseRouter from "./routes/wereHouseRouter.js";
+import stocksInRouter from "./routes/stocksInRouter.js";
 import stockOutRouter from "./routes/stockOutRouter.js";
 import stockInUserRouter from "./routes/user/stockInUserRouter.js";
 import hospitalStockViewAdmin from "./routes/hospitalStockViewAdmin.js";
@@ -63,7 +63,7 @@ app.use("/api/v1/jobs", authenticateUser, jobsRouter);
 app.use("/api/v1/hospitals", authenticateUser, hospitalRouter);
 app.use("/api/v1/vendors", authenticateUser, vendorRouter);
 app.use("/api/v1/stocks", authenticateUser, stockRouter);
-app.use("/api/v1/wereHouse", authenticateUser, wereHouseRouter);
+app.use("/api/v1/wereHouse", authenticateUser, stocksInRouter);
 app.use("/api/v1/stockOut", authenticateUser, stockOutRouter);
 app.use("/api/v1/hospitalDataAdmin", authenticateUser, hospitalStockViewAdmin);
 

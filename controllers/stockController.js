@@ -2,10 +2,10 @@ import Stocks from "../models/Stocks.js";
 import { StatusCodes } from "http-status-codes";
 
 import { BadRequestError, NotFoundError } from "../errors/index.js";
-import StocksHosital from "../models/User/stocksHospital.js";
+import StocksHosital from "../models/User/StocksHospital.js";
 
 import checkPermissions from "../utils/checkPermissions.js";
-import UserStock from "../models/User/stockOut.js";
+import StocksOut from "../models/User/StocksOut.js";
 
 const addStockQty = async (stock_name, totalQtyInOneBox, totalBox, price) => {
   // console.log(stock_name, totalQtyInOneBox, totalBox);
@@ -136,7 +136,7 @@ const updateStock = async (req, res) => {
       runValidators: true,
     }
   );
-  await UserStock.updateMany(
+  await StocksOut.updateMany(
     { stockOutDetail: { $elemMatch: { stock_name: stock.stock_name } } },
     { stock_name },
     {

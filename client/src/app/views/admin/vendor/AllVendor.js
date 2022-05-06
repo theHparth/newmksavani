@@ -207,7 +207,7 @@ const CustomerList = () => {
                     color="primary"
                     onClick={() => setShouldOpenEditorDialog(true)}
                 >
-                    Add New Venodr
+                    Add New Vendor
                 </Button>
             )}
             {isLoading && <LodingShow />}

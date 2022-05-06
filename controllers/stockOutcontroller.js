@@ -1,11 +1,10 @@
-import UserStock from "../models/User/stockOut.js";
+import StocksOut from "../models/User/StocksOut.js";
 import { StatusCodes } from "http-status-codes";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
 import checkPermissions from "../utils/checkPermissions.js";
 import { addStockQty, removeStockQty } from "./stockController.js";
 import Hospital from "../models/Hospital.js";
 import mongoose from "mongoose";
-import StocksHosital from "../models/User/stocksHospital.js";
 import stocks from "../models/Stocks.js";
 
 const sendStockUser = async (req, res) => {
@@ -19,10 +18,10 @@ const sendStockUser = async (req, res) => {
   };
 
   var invoiceNum = getRandomId();
-  const invoice = await UserStock.findOne({ invoiceNum });
-  if (invoice) {
-    getRandomId();
-  }
+  // const invoice = await StocksOut.findOne({ invoiceNum });
+  // if (invoice) {
+  //   getRandomId();
+  // }
   const hospitalData = await Hospital.findOne({ hospitalName });
   if (!hospitalData) {
     throw new BadRequestError("Hospital data not found");
@@ -68,7 +67,7 @@ const sendStockUser = async (req, res) => {
   req.body.createdBy = req.user.userId;
   req.body.createdFor = hospitalData._id;
 
-  const stock = await UserStock.create(req.body);
+  const stock = await StocksOut.create(req.body);
   res.status(StatusCodes.CREATED).json({ stock });
 };
 
@@ -80,10 +79,10 @@ const filterResult = async (queryObject, searchText, status) => {
 
   var result;
   if (!searchText) {
-    result = await UserStock.find(queryObject);
+    result = await StocksOut.find(queryObject);
   } else if (isNaN(searchText) === false) {
     searchText = parseInt(searchText);
-    result = await UserStock.find({
+    result = await StocksOut.find({
       $and: [
         queryObject,
         {
@@ -92,7 +91,7 @@ const filterResult = async (queryObject, searchText, status) => {
       ],
     });
   } else {
-    result = await UserStock.find({
+    result = await StocksOut.find({
       $and: [
         queryObject,
         {
@@ -184,7 +183,7 @@ const getAllSendStockUser = async (req, res) => {
 
   const allStockOutData = result;
 
-  const totalHospitals = await UserStock.countDocuments(queryObject);
+  const totalHospitals = await StocksOut.countDocuments(queryObject);
 
   res.status(StatusCodes.OK).json({ allStockOutData, totalHospitals });
 };
@@ -208,7 +207,7 @@ const getAllSendStockUser = async (req, res) => {
 //       new_dates.push(yyyy + "-" + mm + "-" + dd);
 //     });
 //     console.log(new_dates, "new_dates");
-//     result = await UserStock.aggregate([
+//     result = await StocksOut.aggregate([
 //       {
 //         $project: {
 //           createdFor: 1,
@@ -280,7 +279,7 @@ const updateSendStockAdmin = async (req, res) => {
   }
   req.body.createdFor = hospitalData._id;
 
-  const stockOutData = await UserStock.findOne({ _id: stockOutId });
+  const stockOutData = await StocksOut.findOne({ _id: stockOutId });
 
   if (!stockOutData) {
     throw new NotFoundError(`No stock data with id :${stockOutId}`);
@@ -327,7 +326,7 @@ const updateSendStockAdmin = async (req, res) => {
     );
   });
 
-  const updatedStockSend = await UserStock.findOneAndUpdate(
+  const updatedStockSend = await StocksOut.findOneAndUpdate(
     { _id: stockOutId },
     req.body,
     {
@@ -342,7 +341,7 @@ const updateSendStockAdmin = async (req, res) => {
 const deleteSendStockAdmin = async (req, res) => {
   const { id: stockOutId } = req.params;
 
-  const stockout = await UserStock.findOne({ _id: stockOutId });
+  const stockout = await StocksOut.findOne({ _id: stockOutId });
 
   if (!stockout) {
     throw new NotFoundError(`No job with id :${stockOutId}`);

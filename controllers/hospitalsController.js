@@ -1,6 +1,6 @@
 import Hospital from "../models/Hospital.js";
 import { StatusCodes } from "http-status-codes";
-import StocksHosital from "../models/User/stocksHospital.js";
+import StocksHosital from "../models/User/StocksHospital.js";
 
 import {
   BadRequestError,
@@ -11,7 +11,7 @@ import {
 // dotenv.config();
 // import nodemailer from "nodemailer";
 import checkPermissions from "../utils/checkPermissions.js";
-import UserStock from "../models/User/stockOut.js";
+import StocksOut from "../models/User/StocksOut.js";
 
 // import { google } from "googleapis";
 // const OAuth2 = google.auth.OAuth2;
@@ -164,7 +164,7 @@ const updateHospital = async (req, res) => {
       runValidators: true,
     }
   );
-  await UserStock.updateMany(
+  await StocksOut.updateMany(
     { createdFor: hospitalId },
     { hospitalName },
     {
